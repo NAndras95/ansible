@@ -17,12 +17,8 @@
 
     - name: Add Docker Repository
       apt_repository:
-        repo: deb https://download.docker.com/linux/debain buster stable
+        repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
         state: present
 
-    - name: Update apt and install docker-ce
+    - name: Update apt and install docker-ce docker-ce-cli containerd.io
       apt: update_cache=yes name=docker-ce state=latest
-
-    - name: Install Docker Module for Python
-      pip:
-        name: docker
