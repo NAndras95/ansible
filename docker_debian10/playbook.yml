@@ -21,4 +21,5 @@
         state: present
 
     - name: Update apt and install docker-ce docker-ce-cli containerd.io
-      apt: update_cache=yes name=docker-ce state=latest
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'docker-ce', 'docker-ce-cli', 'containerd.io']
