@@ -8,7 +8,21 @@
 # Base packages install and configs download
     - name: Install required system packages
       apt: name={{ item }} state=latest update_cache=yes
-      loop: [ 'apt-transport-https', 'wget', 'gnupg', 'lsb-release', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+      loop: [ 'chkrootkit', 'rkhunter', 'unattended-upgrades', 'apt-listchanges', 'apticron', 'apt-transport-https', 'wget', 'gnupg', 'lsb-release', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+    - name: Add Lynis GPG apt Key
+      apt_key:
+        url: https://packages.cisofy.com/keys/cisofy-software-public.key
+        state: present
+        
+    - name: Add Lynis Repository
+      apt_repository:
+        repo: deb https://packages.cisofy.com/community/lynis/deb/ stable main
+        state: present
+
+    - name: Update apt and install trivy
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'lynis', 'host']
 
     - name: Download my custom aliases
       get_url:
