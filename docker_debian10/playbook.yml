@@ -5,11 +5,17 @@
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
-
+# Base packages install and configs download
     - name: Install required system packages
       apt: name={{ item }} state=latest update_cache=yes
-      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+      loop: [ 'apt-transport-https', 'wget', 'gnupg', 'lsb-release', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
 
+    - name: Download my custom aliases
+      get_url:
+        url: https://github.com/NAndras95/linux/blob/main/00-aliases.sh
+        dest: /etc/profile.d/00-aliases.sh
+        mode: '0640'
+# Docker install
     - name: Add Docker GPG apt Key
       apt_key:
         url: https://download.docker.com/linux/debian/gpg
@@ -29,3 +35,17 @@
         url: https://github.com/docker/compose/releases/download/1.28.4/docker-compose-Linux-x86_64
         dest: /usr/local/bin/docker-compose
         mode: '0777'
+# Trivy install
+    - name: Add Trivy GPG apt Key
+      apt_key:
+        url: https://aquasecurity.github.io/trivy-repo/deb/public.key
+        state: present
+
+    - name: Add Trivy Repository
+      apt_repository:
+        repo: deb https://aquasecurity.github.io/trivy-repo/deb buster main
+        state: present
+
+    - name: Update apt and install trivy
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'trivy']
