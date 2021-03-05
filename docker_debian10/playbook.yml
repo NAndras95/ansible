@@ -29,3 +29,9 @@
         url: https://github.com/docker/compose/releases/download/1.28.4/docker-compose-Linux-x86_64
         dest: /usr/local/bin/docker-compose
         mode: '0777'
+        
+    - name: Download my custom aliases
+      get_url:
+        url: https://github.com/NAndras95/linux/blob/main/00-aliases.sh
+        dest: /etc/profile.d/00-aliases.sh
+        mode: '0640'
